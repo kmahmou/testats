@@ -1,0 +1,54 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "servicePlanName": {
+            "type": "string"
+        },
+        "numberOfWorkers": { 
+            "type": "string"
+        },        
+        "servicePlanSKU": {
+            "type": "string",
+            "allowedValues": [
+                "Free",
+                "Shared",
+                "Basic",
+                "Standard"                
+            ],
+            "defaultValue": "Free"
+        },
+        "servicePlanWorkerSize": {
+            "type": "string",
+            "allowedValues": [
+                "0",
+                "1",
+                "2"
+            ]
+        }
+    },
+	"variables": {},
+	"resources": [{
+		"name": "[parameters('servicePlanName')]",
+		"type": "Microsoft.Web/serverfarms",
+		"location": "West Europe",
+        "apiVersion": "2014-06-01",
+		"dependsOn": [],
+		"tags": {
+			"[concat('hidden-related:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('servicePlanName'))]": "Resource",
+			"displayName": "[parameters('servicePlanName')]"
+		},
+		"properties": {
+			"name": "[parameters('servicePlanName')]",
+			"sku": "[parameters('servicePlanSKU')]",
+			"workerSize": "[parameters('servicePlanWorkerSize')]",
+			"numberOfWorkers": "[parameters('numberOfWorkers')]"			
+		}
+	}],
+	"outputs": {
+		"serverFarmId": {
+			"type": "string",
+			"value": "[resourceId('Microsoft.Web/serverfarms', parameters('servicePlanName'))]"
+		}
+	}
+}

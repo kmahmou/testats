@@ -1,0 +1,47 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"webappName": {
+			"type": "string"
+		},
+		"servicePlanResourceGroupName": {
+			"type": "string"
+		},
+		"servicePlanName": {
+			"type": "string"
+		}
+	},
+	"variables": {},
+	"resources": [{
+		"name": "[parameters('webappName')]",
+		"type": "Microsoft.Web/sites",
+		"location": "[resourceGroup().location]",
+		"apiVersion": "2015-08-01",
+		"dependsOn": [],
+		"tags": {
+			"displayName": "[parameters('webappName')]"
+		},
+		"properties": {
+			"name": "[parameters('webappName')]",
+			"serverFarmId": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/', parameters('servicePlanResourceGroupName'), '/providers/', 'Microsoft.Web/serverfarms/', parameters('servicePlanName'))]",			
+			"clientAffinityEnabled": false,
+			"siteConfig": {
+				"AlwaysOn": true,
+				"use32BitWorkerProcess": false,
+				"clientAffinityEnabled": false,
+				"phpVersion": "",
+				"pythonVersion": "",
+				"javaVersion": null
+			}
+		},
+		"resources": []	
+		
+	}],
+	"outputs": {
+		"webapp": {
+			"type": "object",
+			"value": "[reference(parameters('webappName'))]"
+		}
+	}
+}
